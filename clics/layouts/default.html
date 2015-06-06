@@ -8,8 +8,9 @@
 <body>
     <pre>'Ello, {{ username }}!</pre>
     <pre>clics: command-line interface chat shell &lt;0.0.1&gt;</pre>
-    {% if help_msg %}
+    {% if run_main == False %}
         <pre>Route your name to generate your character and talk!</pre>
     {% endif %}
+    <pre class="cmd"><span class="dollar">$ </span>clics:{{ username }}/<span class="cursor">{{ cursor }}</span></pre>
 </body>
 </html>
