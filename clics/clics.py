@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 
-import os, sys, argparse, webbrowser, time
+import os, sys, argparse, webbrowser
 from bottle import *
 from jinja2 import *
 
@@ -64,7 +64,6 @@ def init_browser(hostname, port, username):
 def app_main(username=''):
 
     run_main = True
-    cursor = ' '
 
     if username == '':
         username = 'ranger'
@@ -73,13 +72,12 @@ def app_main(username=''):
     return template.render(
         username=username,
         run_main=run_main,
-        cursor=cursor,
         )
 
 @route('/layouts/<filename:path>')
 def send_static(filename):
 
-    return static_file(filename, root='./layouts', download=True)
+    return static_file(filename, root='./layouts')
 
 if __name__ == '__main__':
     init_path()

@@ -11,6 +11,9 @@
     {% if run_main == False %}
         <pre>Route your name to generate your character and talk!</pre>
     {% endif %}
-    <pre class="cmd"><span class="dollar">$ </span>clics:{{ username }}/<span class="cursor">{{ cursor }}</span></pre>
+    <pre id="cmd"><span id="dollar">$ </span>clics:{{ username }}/<span id="stdio"></span></pre>
+
+    <script type="text/javascript" src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="layouts/clics.js"></script>
 </body>
 </html>

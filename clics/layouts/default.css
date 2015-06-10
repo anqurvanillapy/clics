@@ -6,26 +6,23 @@ body {
 }
 
 pre {
-    font-family: 'Lucida Console', 'Courier New', Courier, monospace;
+    font-family: 'Lucida Console', Courier, monospace;
     width: 100%;
     margin: 0.2em 0px;
 }
 
 /* Widgets styles */
 
-.cmd {
+#cmd {
     position: fixed;
     bottom: 0px;
 }
 
-.dollar {
+#dollar {
     color: red;
     font-weight: bold;
 }
 
-.cursor {
-    width: 1em;
-    height: 1em;
-    color: white;
-    background-color: white;
+#stdio {
+    width: auto;
 }
