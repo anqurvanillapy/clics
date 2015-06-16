@@ -1,10 +1,32 @@
 (function() {
     var Clics = {
+        loadUser: function(url) {
+            var ajax = new XMLHttpRequest(),
+                user;
+
+            ajax.onreadystatechange = function() {
+                if (ajax.readyState == 4 && ajax.status == 200) {
+                    user = JSON.parse(ajax.responseText);
+                }
+            }
+            ajax.open('GET', url);
+            ajax.send();
+
+            console.log(user);
+        },
+
         stdio: function() {
             return document.querySelector('#stdio');
         },
 
-        begin: function() {
+        usernameURL: function() {
+            var username = document.querySelector('#username'),
+                url = './' + username.innerHTML + '/init';
+            return url
+        },
+
+        main: function() {
+
             window.onkeydown = function(e) {
                 var key = (e.which) ? e.which : e.keyCode;
 
@@ -19,6 +41,7 @@
             }.bind(this);
 
             this.toggleCursor(600);
+            this.loadUser(this.usernameURL());
         },
 
         write: function(text) {
@@ -49,9 +72,6 @@
             if (key == 8 || key == 46)
                 // Delete the last character.
                 stdio.innerHTML = stdio.innerHTML.replace(/.$/, '');
-            // Enter.
-            else if (key == 13)
-                console.log("Press Enter");
             // Tab.
             else if (key == 9)
                 // Output four spaces.
@@ -60,7 +80,15 @@
             else if ((key == 67 || key == 68) && e.ctrlKey) {
                 if (key == 67)
                     this.write('^C');
-                stdio.innerHTML = '';
+                setTimeout(function() {
+                    stdio.innerHTML = '';
+                }, 300);
+            }
+            // Enter.
+            else if (key == 13) {
+                var stdio = this.stdio(),
+                    msg = stdio.innerHTML;
+                this.transJSON(msg);
             }
         },
 
@@ -83,8 +111,18 @@
                 }.bind(this), timeout);
             }
         },
+
+        transJSON: function(data) {
+            var msg;
+            if (typeof data == 'object')
+                console.log(data);
+            else {
+                msg = data;
+                console.log(msg);
+            }
+        },
     }
 
     var clics = Object.create(Clics);
-    clics.begin();
+    clics.main();
 })();

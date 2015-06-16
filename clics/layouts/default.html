@@ -3,6 +3,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>clics</title>
+    <link rel="shortcut icon" href="layouts/favicon.ico">
     <link rel="stylesheet" type="text/css" href="layouts/default.css">
 </head>
 <body>
@@ -10,10 +11,9 @@
     <pre>clics: command-line interface chat shell &lt;0.0.1&gt;</pre>
     {% if run_main == False %}
         <pre>Route your name to generate your character and talk!</pre>
+    {% else %}
+        <pre id="cmd"><span id="dollar">$ </span>clics:<span id="username">{{ username }}</span>/<span id="stdio"></span></pre>
+        <script type="text/javascript" src="layouts/clics.js"></script>
     {% endif %}
-    <pre id="cmd"><span id="dollar">$ </span>clics:{{ username }}/<span id="stdio"></span></pre>
-
-    <script type="text/javascript" src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
-    <script type="text/javascript" src="layouts/clics.js"></script>
 </body>
 </html>

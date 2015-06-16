@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 
-import os, sys, argparse, webbrowser
+import os, sys, argparse, webbrowser, random, json
 from bottle import *
 from jinja2 import *
 
@@ -11,7 +11,6 @@ template = env.get_template('default.html')
 def init_path():
 
     path = os.getcwd()
-    # Checkout whether in path
     if path not in sys.path:
         sys.path.append(path)
 
@@ -55,12 +54,26 @@ def parse_arguments():
 
 def init_browser(hostname, port, username):
 
-    url = "http://%s:%d/%s" % (hostname, port, username)
-    # print url
+    url = "http://%s:%d/u/%s" % (hostname, port, username)
     webbrowser.open(url)
 
+def init_user(username):
+
+    if username == '':
+        return
+    else:
+        c = lambda: random.randint(0, 255)
+        usercolor = '#%02X%02X%02X' % (c(),c(),c())
+
+        user = {
+            "username": username,
+            "usercolor": usercolor,
+        }
+
+        return user
+
 @route('/')
-@route('/<username>')
+@route('/u/<username>')
 def app_main(username=''):
 
     run_main = True
@@ -74,7 +87,12 @@ def app_main(username=''):
         run_main=run_main,
         )
 
-@route('/layouts/<filename:path>')
+@route('/u/<username>/init')
+def send_user(username):
+
+    return json.dumps(init_user(username))
+
+@route('/u/layouts/<filename:path>')
 def send_static(filename):
 
     return static_file(filename, root='./layouts')
