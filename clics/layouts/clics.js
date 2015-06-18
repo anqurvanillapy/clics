@@ -9,7 +9,7 @@
                     user = JSON.parse(ajax.responseText);
                     this.initUsercolor(user);
                 }
-            }
+            }.bind(this);
 
             ajax.open('GET', url);
             ajax.send();
@@ -21,7 +21,7 @@
 
             if (user) {
                 usercolor = user.usercolor;
-                username.style.color = usercolor;
+                username.style.backgroundColor = usercolor;
                 this.dumpUser(username.innerHTML, usercolor);
             }
         },
