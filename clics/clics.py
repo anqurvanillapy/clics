@@ -5,6 +5,9 @@ import os, sys, argparse, webbrowser, random, json
 from bottle import *
 from jinja2 import *
 
+__version__ = '0.0.1'
+STATIC_ROOT = './layouts'
+
 env = Environment(loader=PackageLoader('clics', 'layouts'))
 template = env.get_template('default.html')
 
@@ -37,13 +40,6 @@ def parse_arguments():
         )
 
     parser.add_argument(
-        '-u', '--username',
-        dest='username',
-        action='store',
-        default='',
-        )
-
-    parser.add_argument(
         '-d', '--debug',
         dest='debug',
         action='store_true',
@@ -52,12 +48,7 @@ def parse_arguments():
 
     return parser.parse_args()
 
-def init_browser(hostname, port, username):
-
-    url = "http://%s:%d/u/%s" % (hostname, port, username)
-    webbrowser.open(url)
-
-def init_user(username):
+def init_usercolor(username):
 
     if username == '':
         return
@@ -66,14 +57,13 @@ def init_user(username):
         usercolor = '#%02X%02X%02X' % (c(),c(),c())
 
         user = {
-            "username": username,
             "usercolor": usercolor,
         }
 
-        return user
+        return json.dumps(user)
 
 @route('/')
-@route('/u/<username>')
+@route('/<username>')
 def app_main(username=''):
 
     run_main = True
@@ -85,20 +75,20 @@ def app_main(username=''):
     return template.render(
         username=username,
         run_main=run_main,
+        version=__version__,
         )
 
-@route('/u/<username>/init')
+@route('/<username>/init')
 def send_user(username):
 
-    return json.dumps(init_user(username))
+    return init_usercolor(username)
 
-@route('/u/layouts/<filename:path>')
+@route('/layouts/<filename:path>')
 def send_static(filename):
 
-    return static_file(filename, root='./layouts')
+    return static_file(filename, root=STATIC_ROOT)
 
 if __name__ == '__main__':
     init_path()
     args = parse_arguments()
-    init_browser(args.hostname, args.port, args.username)
     run(host=args.hostname, port=args.port, debug=args.debug)

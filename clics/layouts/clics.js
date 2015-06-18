@@ -1,31 +1,51 @@
 (function() {
     var Clics = {
-        loadUser: function(url) {
+        loadUsercolor: function(url) {
             var ajax = new XMLHttpRequest(),
                 user;
 
             ajax.onreadystatechange = function() {
                 if (ajax.readyState == 4 && ajax.status == 200) {
                     user = JSON.parse(ajax.responseText);
+                    this.initUsercolor(user);
                 }
             }
+
             ajax.open('GET', url);
             ajax.send();
+        },
 
-            console.log(user);
+        initUsercolor: function(user) {
+            var username = this.username(),
+                usercolor;
+
+            if (user) {
+                usercolor = user.usercolor;
+                username.style.color = usercolor;
+                this.dumpUser(username.innerHTML, usercolor);
+            }
+        },
+
+        dumpUser: function(username, usercolor, message) {
+            var User = {
+                "username": username,
+                "usercolor": usercolor,
+                "message": message,
+            }
+
+            return User
         },
 
         stdio: function() {
             return document.querySelector('#stdio');
         },
 
-        usernameURL: function() {
-            var username = document.querySelector('#username'),
-                url = './' + username.innerHTML + '/init';
-            return url
+        username: function() {
+            return document.querySelector('#username');
         },
 
         main: function() {
+            var url = './' + document.querySelector('#username').innerHTML + '/init';
 
             window.onkeydown = function(e) {
                 var key = (e.which) ? e.which : e.keyCode;
@@ -41,7 +61,7 @@
             }.bind(this);
 
             this.toggleCursor(600);
-            this.loadUser(this.usernameURL());
+            this.loadUsercolor(url);
         },
 
         write: function(text) {
@@ -96,9 +116,9 @@
             var cursor = document.querySelector('#cursor'),
                 insert = document.querySelector('#cmd');
 
-            if (cursor) {
+            if (cursor)
                 cursor.parentNode.removeChild(cursor);
-            } else {
+            else {
                 cursor = document.createElement('span');
                 cursor.id = 'cursor';
                 cursor.innerHTML = '&#x2588';
@@ -112,15 +132,9 @@
             }
         },
 
-        transJSON: function(data) {
-            var msg;
-            if (typeof data == 'object')
-                console.log(data);
-            else {
-                msg = data;
-                console.log(msg);
-            }
-        },
+        transJSON: function(data) { //TODO
+            console.log(data);
+        }
     }
 
     var clics = Object.create(Clics);

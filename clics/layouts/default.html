@@ -3,17 +3,17 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>clics</title>
-    <link rel="shortcut icon" href="layouts/favicon.ico">
-    <link rel="stylesheet" type="text/css" href="layouts/default.css">
+    <link rel="shortcut icon" type="image/x-icon" href="/layouts/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="/layouts/default.css">
 </head>
 <body>
     <pre>'Ello, {{ username }}!</pre>
-    <pre>clics: command-line interface chat shell &lt;0.0.1&gt;</pre>
+    <pre>clics: command-line interface chat shell &lt;{{ version }}&gt;</pre>
     {% if run_main == False %}
         <pre>Route your name to generate your character and talk!</pre>
     {% else %}
-        <pre id="cmd"><span id="dollar">$ </span>clics:<span id="username">{{ username }}</span>/<span id="stdio"></span></pre>
-        <script type="text/javascript" src="layouts/clics.js"></script>
+        <pre id="cmd"><span id="username">{{ username }}</span>@clics:~<span id="dollar">$ </span><span id="stdio"></span></pre>
+        <script type="text/javascript" src="/layouts/clics.js"></script>
     {% endif %}
 </body>
 </html>
