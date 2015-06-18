@@ -33,7 +33,7 @@
                 "message": message,
             }
 
-            return User
+            return User;
         },
 
         stdio: function() {
@@ -134,7 +134,7 @@
 
         transJSON: function(data) { //TODO
             console.log(data);
-        }
+        },
     }
 
     var clics = Object.create(Clics);
