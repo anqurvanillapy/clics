@@ -1,18 +1,18 @@
 (function() {
     var Clics = {
         loadUsercolor: function(url) {
-            var ajax = new XMLHttpRequest(),
+            var ajaxUsr = new XMLHttpRequest(),
                 user;
 
-            ajax.onreadystatechange = function() {
-                if (ajax.readyState == 4 && ajax.status == 200) {
-                    user = JSON.parse(ajax.responseText);
+            ajaxUsr.onreadystatechange = function() {
+                if (ajaxUsr.readyState == 4 && ajaxUsr.status == 200) {
+                    user = JSON.parse(ajaxUsr.responseText);
                     this.initUsercolor(user);
                 }
             }.bind(this);
 
-            ajax.open('GET', url);
-            ajax.send();
+            ajaxUsr.open('GET', url, true);
+            ajaxUsr.send();
         },
 
         initUsercolor: function(user) {
@@ -22,18 +22,7 @@
             if (user) {
                 usercolor = user.usercolor;
                 username.style.backgroundColor = usercolor;
-                this.dumpUser(username.innerHTML, usercolor);
             }
-        },
-
-        dumpUser: function(username, usercolor, message) {
-            var User = {
-                "username": username,
-                "usercolor": usercolor,
-                "message": message,
-            }
-
-            return User;
         },
 
         stdio: function() {
@@ -44,8 +33,12 @@
             return document.querySelector('#username');
         },
 
+        usercolor: function() {
+            return document.querySelector('#username').style.backgroundColor;
+        },
+
         main: function() {
-            var url = './' + document.querySelector('#username').innerHTML + '/init';
+            var url = './' + this.username().innerHTML + '/init';
 
             window.onkeydown = function(e) {
                 var key = (e.which) ? e.which : e.keyCode;
@@ -106,9 +99,7 @@
             }
             // Enter.
             else if (key == 13) {
-                var stdio = this.stdio(),
-                    msg = stdio.innerHTML;
-                this.transJSON(msg);
+                this.transJSON();
             }
         },
 
@@ -132,8 +123,22 @@
             }
         },
 
-        transJSON: function(data) { //TODO
-            console.log(data);
+        transJSON: function() {
+            var ajaxMsg = new XMLHttpRequest(),
+                MSG = {
+                    "username": this.username().innerHTML,
+                    "usercolor": this.usercolor(),
+                    "message": this.stdio().innerHTML,
+                }
+
+            ajaxMsg.open("POST", './msg', true);
+            ajaxMsg.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+            ajaxMsg.send(JSON.stringify(MSG));
+
+            this.stdio().innerHTML = 'Sending...';
+            setTimeout(function() {
+                this.stdio().innerHTML = '';
+            }.bind(this), 400);
         },
     }
 

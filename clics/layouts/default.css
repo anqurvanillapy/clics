@@ -17,12 +17,17 @@ pre {
     position: fixed;
     bottom: 0px;
 }
+    
+    #username {
+        border-radius: 2px;
+        padding: 1px 2.5px;
+    }
 
-#dollar {
-    color: red;
-    font-weight: bold;
-}
+    #dollar {
+        color: red;
+        font-weight: bold;
+    }
 
-#stdio {
-    width: auto;
-}
+    #stdio {
+        width: auto;
+    }

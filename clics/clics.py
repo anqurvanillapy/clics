@@ -88,6 +88,15 @@ def send_static(filename):
 
     return static_file(filename, root=STATIC_ROOT)
 
+@route('/msg', method='post')
+def send_msg():
+
+    username = request.json['username']
+    usercolor = request.json['usercolor']
+    message = request.json['message']
+
+    print username, usercolor, message
+
 if __name__ == '__main__':
     init_path()
     args = parse_arguments()
