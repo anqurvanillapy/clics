@@ -1,28 +1,33 @@
 (function() {
     var Clics = {
-        loadUsercolor: function(url) {
-            var ajaxUsr = new XMLHttpRequest(),
-                user;
+        loadUsercolor: function() {
+            var colorcookie = document.cookie;
 
-            ajaxUsr.onreadystatechange = function() {
-                if (ajaxUsr.readyState == 4 && ajaxUsr.status == 200) {
-                    user = JSON.parse(ajaxUsr.responseText);
-                    this.initUsercolor(user);
-                }
-            }.bind(this);
+            if (colorcookie) {
+                var usercolor = colorcookie.split('=')[1];
 
-            ajaxUsr.open('GET', url, true);
-            ajaxUsr.send();
+                this.initUsercolor(usercolor);
+            } else {
+                var ajaxUsr = new XMLHttpRequest(),
+                    url = './' + this.username().innerHTML + '/init',
+                    user;
+
+                ajaxUsr.onreadystatechange = function() {
+                    if (ajaxUsr.readyState == 4 && ajaxUsr.status == 200) {
+                        user = JSON.parse(ajaxUsr.responseText);
+                        this.initUsercolor(user);
+                    }
+                }.bind(this);
+
+                ajaxUsr.open('GET', url, true);
+                ajaxUsr.send();
+            }
         },
 
-        initUsercolor: function(user) {
-            var username = this.username(),
-                usercolor;
-
-            if (user) {
-                usercolor = user.usercolor;
-                username.style.backgroundColor = usercolor;
-            }
+        initUsercolor: function(c) {
+            var usercolor = document.querySelector('#username');
+            
+            usercolor.style.backgroundColor = (typeof c == 'object') ? c.usercolor : c;
         },
 
         stdio: function() {
@@ -38,7 +43,6 @@
         },
 
         main: function() {
-            var url = './' + this.username().innerHTML + '/init';
 
             window.onkeydown = function(e) {
                 var key = (e.which) ? e.which : e.keyCode;
@@ -54,7 +58,7 @@
             }.bind(this);
 
             this.toggleCursor(600);
-            this.loadUsercolor(url);
+            this.loadUsercolor();
         },
 
         write: function(text) {
@@ -131,7 +135,7 @@
                     "message": this.stdio().innerHTML,
                 }
 
-            ajaxMsg.open("POST", './msg', true);
+            ajaxMsg.open('POST', './msg', true);
             ajaxMsg.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
             ajaxMsg.send(JSON.stringify(MSG));
 

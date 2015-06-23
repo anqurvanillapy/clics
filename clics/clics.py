@@ -48,7 +48,7 @@ def parse_arguments():
 
     return parser.parse_args()
 
-def init_usercolor(username):
+def init_user(username):
 
     if username == '':
         return
@@ -60,7 +60,7 @@ def init_usercolor(username):
             "usercolor": usercolor,
         }
 
-        return json.dumps(user)
+        return user
 
 @route('/')
 @route('/<username>')
@@ -81,7 +81,12 @@ def app_main(username=''):
 @route('/<username>/init')
 def send_user(username):
 
-    return init_usercolor(username)
+    user = init_user(username)
+    
+    if not request.get_cookie('usercolor'):
+        response.set_cookie('usercolor', user['usercolor'])
+
+    return json.dumps(user)
 
 @route('/layouts/<filename:path>')
 def send_static(filename):
@@ -91,9 +96,10 @@ def send_static(filename):
 @route('/msg', method='post')
 def send_msg():
 
-    username = request.json['username']
-    usercolor = request.json['usercolor']
-    message = request.json['message']
+    req = request.json
+    username = req['username']
+    usercolor = req['usercolor']
+    message = req['message']
 
     print username, usercolor, message
 
