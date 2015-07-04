@@ -7,6 +7,7 @@
                 var usercolor = colorcookie.split('=')[1];
 
                 this.initUsercolor(usercolor);
+
             } else {
                 var ajaxUsr = new XMLHttpRequest(),
                     url = './' + this.username().innerHTML + '/init',
@@ -30,8 +31,8 @@
             usercolor.style.backgroundColor = (typeof c == 'object') ? c.usercolor : c;
         },
 
-        stdio: function() {
-            return document.querySelector('#stdio');
+        stdout: function() {
+            return document.querySelector('#stdout');
         },
 
         username: function() {
@@ -62,7 +63,7 @@
         },
 
         write: function(text) {
-            var output = this.stdio();
+            var output = this.stdout();
 
             if (!output)
                 return;
@@ -71,34 +72,34 @@
         },
 
         typeWriter: function(key) {
-            var stdio = this.stdio();
+            var stdout = this.stdout();
 
             // Input normal characters.
-            if (!stdio || key == 9 || key == 13 || key > 0x7E || key < 0x20)
+            if (!stdout || key == 9 || key == 13 || key > 0x7E || key < 0x20)
                 return;
 
-            stdio.innerHTML += String.fromCharCode(key);
+            stdout.innerHTML += String.fromCharCode(key);
         },
 
         handleSpecialKey: function(key, e) {
-            var stdio = this.stdio();
+            var stdout = this.stdout();
 
-            if (!stdio)
+            if (!stdout)
                 return;
             // Backspace/Delete.
             if (key == 8 || key == 46)
                 // Delete the last character.
-                stdio.innerHTML = stdio.innerHTML.replace(/.$/, '');
+                stdout.innerHTML = stdout.innerHTML.replace(/.$/, '');
             // Tab.
             else if (key == 9)
                 // Output four spaces.
-                stdio.innerHTML += "    ";
+                stdout.innerHTML += "    ";
             // Ctrl+C, Ctrl+D
             else if ((key == 67 || key == 68) && e.ctrlKey) {
                 if (key == 67)
                     this.write('^C');
                 setTimeout(function() {
-                    stdio.innerHTML = '';
+                    stdout.innerHTML = '';
                 }, 300);
             }
             // Enter.
@@ -132,16 +133,16 @@
                 MSG = {
                     "username": this.username().innerHTML,
                     "usercolor": this.usercolor(),
-                    "message": this.stdio().innerHTML,
+                    "message": this.stdout().innerHTML
                 }
 
-            ajaxMsg.open('POST', './msg', true);
+            ajaxMsg.open('POST', './send_msg', true);
             ajaxMsg.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
             ajaxMsg.send(JSON.stringify(MSG));
 
-            this.stdio().innerHTML = 'Sending...';
+            this.stdout().innerHTML = 'Sending...';
             setTimeout(function() {
-                this.stdio().innerHTML = '';
+                this.stdout().innerHTML = '';
             }.bind(this), 400);
         },
     }
