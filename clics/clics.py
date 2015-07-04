@@ -78,6 +78,7 @@ class ClicsServer(object):
         while True:
 
             # Assign the next refresh time
+            global timeout
             timeout = time.time() + INTERVAL
             # Clean the message cache
             msg_cache[:] = []
@@ -140,4 +141,4 @@ def send_static(filename):
 if __name__ == '__main__':
 
     args = parse_arguments()
-    server = ClicsServer(args)
+    clics = ClicsServer(args)
