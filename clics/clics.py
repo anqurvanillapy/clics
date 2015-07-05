@@ -11,7 +11,8 @@ from jinja2 import *
 
 # Consts or configs
 STATIC_ROOT = './layouts'
-INTERVAL = 4.0 # secs
+RECV_MSG = 4.0 # secs
+RESP_MSG = 1.0 # secs
 
 # Server global variables init
 msg_cache = []
@@ -79,17 +80,19 @@ class ClicsServer(object):
 
             # Assign the next refresh time
             global timeout
-            timeout = time.time() + INTERVAL
+            timeout = time.time() + RECV_MSG
+
+            # Interval for receiving messages
+            time.sleep(RECV_MSG)
+            # Interval for responsing the client
+            time.sleep(RESP_MSG)
+
             # Clean the message cache
             msg_cache[:] = []
-
-            time.sleep(INTERVAL)
 
 def init_user(username):
 
     if username:
-        return
-    else:
         c = lambda: random.randint(0, 255)
         usercolor = '#%02X%02X%02X' % (c(), c(), c())
 
@@ -127,11 +130,24 @@ def send_user(username):
 
     return json.dumps(user)
 
+@route('/sync')
+def sync_server():
+
+    timeout_pack = {
+        "timeout": timeout
+    }
+
+    return json.dumps(timeout_pack)
+
 @post('/send_msg')
 def store_msg():
 
     msg_cache.append(request.json)
-    print timeout
+
+@post('/recv_msg')
+def send_msg():
+
+    return json.dumps(msg_cache)
 
 @route('/layouts/<filename:path>')
 def send_static(filename):

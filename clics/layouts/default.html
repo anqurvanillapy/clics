@@ -12,6 +12,7 @@
     {% if run_main == False %}
         <pre>Route your name to generate your character and talk!</pre>
     {% else %}
+        <pre id="sync">Syncing the server...</pre>
         <pre id="cmd"><span id="username">{{ username }}</span>@clics:~<span id="dollar">$ </span><span id="stdout"></span></pre>
         <script type="text/javascript" src="/layouts/clics.js"></script>
     {% endif %}

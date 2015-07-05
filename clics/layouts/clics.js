@@ -7,7 +7,6 @@
                 var usercolor = colorcookie.split('=')[1];
 
                 this.initUsercolor(usercolor);
-
             } else {
                 var ajaxUsr = new XMLHttpRequest(),
                     url = './' + this.username().innerHTML + '/init',
@@ -26,9 +25,77 @@
         },
 
         initUsercolor: function(c) {
-            var usercolor = document.querySelector('#username');
+            var usercolor = document.querySelector('#username'),
+                sync = document.querySelector('#sync');
             
             usercolor.style.backgroundColor = (typeof c == 'object') ? c.usercolor : c;
+
+            sync.innerHTML += "Done."
+            this.Poll();
+        },
+
+        /**
+         * TODO:
+         * Execute an infinite loop of polling.
+         * This function is just executed once,
+         * making receiving done only after the first cache period.
+         * Maybe some closure callback can be used.
+         */
+        Poll: function() {
+            var ajaxSync = new XMLHttpRequest(),
+                timeout;
+
+            ajaxSync.onreadystatechange = function() {
+                if (ajaxSync.readyState == 4 && ajaxSync.status == 200) {
+                    timeout = JSON.parse(ajaxSync.responseText);
+                    setInterval(timeout);
+                }
+            }
+
+            ajaxSync.open('GET', './sync', true);
+            ajaxSync.send();
+
+            function setInterval(timeout) {
+                var d = new Date(),
+                    interval;
+                
+                if (timeout) {
+                    interval = timeout.timeout * 1000 - d.getTime();
+                    fetchMsg(interval);
+                }
+            }
+
+            function fetchMsg(interval) {
+                setTimeout(function() {
+                    ajaxSync.onreadystatechange = function() {
+                        if (ajaxSync.readyState == 4 && ajaxSync.status == 200) {
+                            server_msg = JSON.parse(ajaxSync.responseText);
+                            displayMsg(server_msg);
+                        }
+                    }
+
+                    ajaxSync.open('POST', './recv_msg', true);
+                    ajaxSync.send();
+                }, interval);
+            }
+
+            function displayMsg(msg) {
+                var body = document.querySelector('body'),
+                    pre, label,
+                    item;
+
+                if (msg) {
+                    msg.forEach(function(item) {
+                        pre = document.createElement('pre');
+                        label = document.createElement('span');
+                        pre.appendChild(label);
+                        body.appendChild(pre);
+                        label.innerHTML = item.username;
+                        label.style.backgroundColor = item.usercolor;
+                        pre.innerHTML += ": " + item.message;
+                    });
+                }
+            }
         },
 
         stdout: function() {
@@ -136,14 +203,19 @@
                     "message": this.stdout().innerHTML
                 }
 
-            ajaxMsg.open('POST', './send_msg', true);
-            ajaxMsg.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-            ajaxMsg.send(JSON.stringify(MSG));
+            if (MSG.message) {
+                ajaxMsg.open('POST', './send_msg', true);
+                ajaxMsg.setRequestHeader(
+                    'Content-Type',
+                    'application/json; charset=UTF-8'
+                );
+                ajaxMsg.send(JSON.stringify(MSG));
 
-            this.stdout().innerHTML = 'Sending...';
-            setTimeout(function() {
-                this.stdout().innerHTML = '';
-            }.bind(this), 400);
+                this.stdout().innerHTML = 'Sending...';
+                setTimeout(function() {
+                    this.stdout().innerHTML = '';
+                }.bind(this), 400);
+            }
         },
     }
 
