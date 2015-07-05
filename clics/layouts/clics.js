@@ -36,72 +36,8 @@
             
             usercolor.style.backgroundColor = (typeof c == 'object') ? c.usercolor : c;
 
-            sync.innerHTML += "Done."
-            this.Poll();
-        },
-
-        /**
-         * TODO:
-         * Execute an infinite loop of polling.
-         * This function is just executed once,
-         * making receiving done only after the first cache period.
-         * Maybe some closure callback can be used.
-         */
-        Poll: function() {
-            var ajaxSync = new XMLHttpRequest(),
-                timeout;
-
-            ajaxSync.onreadystatechange = function() {
-                if (ajaxSync.readyState == 4 && ajaxSync.status == 200) {
-                    timeout = JSON.parse(ajaxSync.responseText);
-                    setInterval(timeout);
-                }
-            }
-
-            ajaxSync.open('GET', './sync', true);
-            ajaxSync.send();
-
-            function setInterval(timeout) {
-                var d = new Date(),
-                    interval;
-                
-                if (timeout) {
-                    interval = timeout.timeout * 1000 - d.getTime();
-                    fetchMsg(interval);
-                }
-            }
-
-            function fetchMsg(interval) {
-                setTimeout(function() {
-                    ajaxSync.onreadystatechange = function() {
-                        if (ajaxSync.readyState == 4 && ajaxSync.status == 200) {
-                            server_msg = JSON.parse(ajaxSync.responseText);
-                            displayMsg(server_msg);
-                        }
-                    }
-
-                    ajaxSync.open('POST', './recv_msg', true);
-                    ajaxSync.send();
-                }, interval);
-            }
-
-            function displayMsg(msg) {
-                var body = document.querySelector('body'),
-                    pre, label,
-                    item;
-
-                if (msg) {
-                    msg.forEach(function(item) {
-                        pre = document.createElement('pre');
-                        label = document.createElement('span');
-                        pre.appendChild(label);
-                        body.appendChild(pre);
-                        label.innerHTML = item.username;
-                        label.style.backgroundColor = item.usercolor;
-                        pre.innerHTML += ": " + item.message;
-                    });
-                }
-            }
+            sync.innerHTML += "Done.";
+            this.beginPolling();
         },
 
         stdout: function() {
@@ -117,18 +53,22 @@
         },
 
         main: function() {
+            this.kb = true;
 
             window.onkeydown = function(e) {
                 var key = (e.which) ? e.which : e.keyCode;
 
-                // Backspace, Tab, Enter or Delete.
-                if (key == 8 || key == 9 || key == 13 || key == 46 || e.ctrlKey)
-                    e.preventDefault();
-                this.handleSpecialKey(key, e);
+                if (this.kb) {
+                    // Backspace, Tab, Enter or Delete.
+                    if (key == 8 || key == 9 || key == 13 || key == 46 || e.ctrlKey)
+                        e.preventDefault();
+                    this.handleSpecialKey(key, e);
+                }
             }.bind(this);
 
             window.onkeypress = function(e) {
-                this.typeWriter((e.which) ? e.which : e.keyCode);
+                if (this.kb)
+                    this.typeWriter((e.which) ? e.which : e.keyCode);
             }.bind(this);
 
             this.toggleCursor(600);
@@ -200,7 +140,7 @@
             }
 
             if (timeout) {
-                setTimeout(function(){
+                setTimeout(function() {
                     this.toggleCursor(timeout);
                 }.bind(this), timeout);
             }
@@ -226,20 +166,95 @@
                     'application/json; charset=UTF-8'
                 );
                 ajaxMsg.send(JSON.stringify(MSG));
-
-                /**
-                 * TODO:
-                 * Make the 'Sending...' label unavailable to
-                 * transfer to the server.
-                 * It is feasible to make it by appending child.
-                 */
-                this.stdout().innerHTML = 'Sending...';
-                setTimeout(function() {
-                    this.stdout().innerHTML = '';
-                }.bind(this), 400);
+                this.sending();
             }
         },
-    }
+
+        sending: function() {
+            var stdout = this.stdout(),
+                span = document.createElement('span');
+
+            stdout.innerHTML = '';
+            span.innerHTML = 'Sending...';
+            span.id = 'sending';
+            stdout.appendChild(span);
+            this.kb = false;
+        },
+
+        sent: function() {
+            var sending = document.querySelector('#sending');
+
+            if (sending)
+                sending.parentNode.removeChild(sending);
+            this.kb = true;
+        },
+
+        beginPolling: function() {
+            var ajaxSync = new XMLHttpRequest(),
+                timestamp;
+
+            ajaxSync.onreadystatechange = function() {
+                if (ajaxSync.readyState == 4 && ajaxSync.status == 200) {
+                    timestamp = JSON.parse(ajaxSync.responseText);
+                    this._setInterval(timestamp);
+                }
+            }.bind(this);
+
+            ajaxSync.open('GET', './sync', true);
+            ajaxSync.send();
+        },
+
+        _setInterval: function(timestamp) {
+            var d = new Date();
+                
+            if (timestamp) {
+                this.interval = timestamp.timeout * 1000 - d.getTime();
+                this.sleep = timestamp.sleep * 1000;
+                this.fetchMsg();
+            }
+        },
+
+        fetchMsg: function() {
+            var ajaxPoll = new XMLHttpRequest(),
+                server_msg;
+
+            setTimeout(function() {
+                ajaxPoll.onreadystatechange = function() {
+                    if (ajaxPoll.readyState == 4 && ajaxPoll.status == 200) {
+                        server_msg = JSON.parse(ajaxPoll.responseText);
+                        this.displayMsg(server_msg);
+                    }
+                }.bind(this);
+
+                ajaxPoll.open('POST', './recv_msg', true);
+                ajaxPoll.send();
+            }.bind(this), this.interval);
+        },
+
+        displayMsg: function(m) {
+            var pre, label,
+                item;
+
+            if (m) {
+                m.forEach(function(item) {
+                    pre = document.createElement('pre');
+                    label = document.createElement('span');
+                    pre.appendChild(label);
+                    document.body.appendChild(pre);
+                    label.innerHTML = item.username;
+                    label.style.backgroundColor = item.usercolor;
+                    pre.innerHTML += ": " + item.message;
+                });
+
+                this.sent();
+                window.scrollTo(0, document.body.scrollHeight);
+
+                setTimeout(function() {
+                    this.beginPolling();
+                }.bind(this), this.sleep);
+            }
+        },
+    };
 
     var clics = Object.create(Clics);
     clics.main();

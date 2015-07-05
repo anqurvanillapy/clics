@@ -11,12 +11,12 @@ from jinja2 import *
 
 # Consts or configs
 STATIC_ROOT = './layouts'
-RECV_MSG = 4.0 # secs
-RESP_MSG = 1.0 # secs
+RECV_MSG = 1.0 # secs
+RESP_MSG = 0.1 # secs
 
 # Server global variables init
 msg_cache = []
-timeout = 0.0
+timestamp = 0.0
 
 # Template init
 env = Environment(loader=PackageLoader('clics', 'layouts'))
@@ -79,8 +79,8 @@ class ClicsServer(object):
         while True:
 
             # Assign the next refresh time
-            global timeout
-            timeout = time.time() + RECV_MSG
+            global timestamp
+            timestamp = time.time() + RECV_MSG
 
             # Interval for receiving messages
             time.sleep(RECV_MSG)
@@ -133,11 +133,12 @@ def send_user(username):
 @route('/sync')
 def sync_server():
 
-    timeout_pack = {
-        "timeout": timeout
+    timestamp_pack = {
+        "timeout": timestamp,
+        "sleep": RESP_MSG
     }
 
-    return json.dumps(timeout_pack)
+    return json.dumps(timestamp_pack)
 
 @post('/send_msg')
 def store_msg():
