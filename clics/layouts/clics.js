@@ -1,4 +1,10 @@
 (function() {
+    /**
+     * TODO:
+     * Write an external AJAX object,
+     * avoiding creating various ones in different functions.
+     * And write an internal function to inherit the external one.
+     */
     var Clics = {
         loadUsercolor: function() {
             var colorcookie = document.cookie;
@@ -173,6 +179,11 @@
             else if (key == 13) {
                 this.transJSON();
             }
+            /**
+             * TODO:
+             * Make Ctrl+L execute the `clear` command,
+             * wiping out all the `pre` labels in the screen.
+             */
         },
 
         toggleCursor: function(timeout) {
@@ -203,6 +214,11 @@
                     "message": this.stdout().innerHTML
                 }
 
+            /**
+             * TODO:
+             * Handle special commands,
+             * like `clear` to wipe out all the `pre` labels.
+             */
             if (MSG.message) {
                 ajaxMsg.open('POST', './send_msg', true);
                 ajaxMsg.setRequestHeader(
@@ -211,6 +227,12 @@
                 );
                 ajaxMsg.send(JSON.stringify(MSG));
 
+                /**
+                 * TODO:
+                 * Make the 'Sending...' label unavailable to
+                 * transfer to the server.
+                 * It is feasible to make it by appending child.
+                 */
                 this.stdout().innerHTML = 'Sending...';
                 setTimeout(function() {
                     this.stdout().innerHTML = '';
