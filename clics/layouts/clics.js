@@ -246,8 +246,8 @@
                     pre.innerHTML += ": " + item.message;
                 });
 
-                this.sent();
                 window.scrollTo(0, document.body.scrollHeight);
+                this.sent();
 
                 setTimeout(function() {
                     this.beginPolling();
