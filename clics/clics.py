@@ -133,12 +133,15 @@ def send_user(username):
 @route('/sync')
 def sync_server():
 
-    timestamp_pack = {
-        "timeout": timestamp,
+    temp_time = time.time()
+    client_interval = timestamp - temp_time
+
+    interval_pack = {
+        "interval": client_interval,
         "sleep": RESP_MSG
     }
 
-    return json.dumps(timestamp_pack)
+    return json.dumps(interval_pack)
 
 @post('/send_msg')
 def store_msg():

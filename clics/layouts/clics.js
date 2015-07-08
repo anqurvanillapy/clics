@@ -208,7 +208,7 @@
             var d = new Date();
                 
             if (timestamp) {
-                this.interval = timestamp.timeout * 1000 - d.getTime();
+                this.interval = timestamp.interval * 1000;
                 this.sleep = timestamp.sleep * 1000;
                 this.fetchMsg();
             }
