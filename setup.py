@@ -6,7 +6,7 @@ from setuptools import setup
 try:
     long_description = open("README.md").read()
 except IOError:
-    long_description = "A Bottle and AJAX exercise: Command-line interface chat shell"
+    long_description = "clics: command-line interface chat shell"
 
 setup(
     name="clics",
