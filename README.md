@@ -12,8 +12,8 @@ browser. Just for fun!
 Requirements
 ------------
 
-- bottle `pip install bottle`
-- `jinja2`
+- bottle
+- jinja2
 
 Installation
 ------------
