@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
+# -*- coding: utf-8 -*-
 
 import argparse
 import random
@@ -9,8 +9,10 @@ import thread
 from bottle import *
 from jinja2 import *
 
+__version__ = '0.1.0'
+
 # Consts or configs
-STATIC_ROOT = './layouts'
+STATIC_ROOT = './clics/layouts'
 RECV_MSG = 1.0 # secs
 RESP_MSG = 0.1 # secs
 
@@ -117,7 +119,7 @@ def app_main(username=''):
     return template.render(
         username=username,
         run_main=run_main,
-        version='0.1'
+        version=__version__
         )
 
 @route('/<username>/init')
@@ -158,7 +160,10 @@ def send_static(filename):
 
     return static_file(filename, root=STATIC_ROOT)
 
-if __name__ == '__main__':
+def main():
 
     args = parse_arguments()
     clics = ClicsServer(args)
+
+if __name__ == '__main__':
+    main()
