@@ -5,15 +5,15 @@ CLICS
 
 **CLICS** is the acronym of **C**ommand-**L**ine **I**nterface
 **C**hat **S**hell, simply a gadget for practising `Python` web
-framework `bottle`, template engine `jinja2`, and async `JavaScript`.
+framework `bottle`, template engine `Jinja2`, and async `JavaScript`.
 It is featured by a superficially CLI-styled shell running on your web
 browser. Just for fun!
 
 Requirements
 ------------
 
-- bottle
-- jinja2
+- `bottle 0.12.8`
+- `Jinja2 2.7.3`
 
 Installation
 ------------
@@ -62,7 +62,7 @@ Known Issues
 
 * [ ] There is an interval between the polling when clients sending
 their messages will lead to failure
-* [ ] Messages loss occurs in low-network-speed environment 
+* [ ] Message loss occurs in low-network-speed environment 
 
 Support
 -------
