@@ -107,7 +107,7 @@
             else if (key == 9)
                 // Output four spaces.
                 stdout.innerHTML += "    ";
-            // Ctrl+C, Ctrl+D
+            // Ctrl+C, Ctrl+D.
             else if ((key == 67 || key == 68) && e.ctrlKey) {
                 if (key == 67)
                     this.write('^C');
@@ -116,14 +116,17 @@
                 }, 300);
             }
             // Enter.
-            else if (key == 13) {
+            else if (key == 13)
                 this.transJSON();
+            // Ctrl+L.
+            else if (key == 76 && e.ctrlKey) {
+                var elem = document.getElementsByTagName('pre'),
+                    index;
+
+                for (index = elem.length - 1; index >= 0; index--) {
+                    elem[index].parentNode.removeChild(elem[index]);
+                }
             }
-            /**
-             * TODO:
-             * Make Ctrl+L execute the `clear` command,
-             * wiping out all the `pre` labels in the screen.
-             */
         },
 
         toggleCursor: function(timeout) {
@@ -154,11 +157,6 @@
                     "message": this.stdout().innerHTML
                 }
 
-            /**
-             * TODO:
-             * Handle special commands,
-             * like `clear` to wipe out all the `pre` labels.
-             */
             if (MSG.message) {
                 ajaxMsg.open('POST', './send_msg', true);
                 ajaxMsg.setRequestHeader(
