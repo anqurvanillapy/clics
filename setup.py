@@ -12,7 +12,6 @@ setup(
     name="clics",
     version="0.1.0",
     description="Command-line interface chat shell",
-    license="MIT",
     author="AnqurVanillapy",
     author_email="anqurvanillapy@gmail.com",
     url="https://github.com/anqurvanillapy/clics",

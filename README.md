@@ -43,8 +43,24 @@ hello!
         Display exceptions and tracebacks in the web page
 ```
 
-### Well...Some Truth ###
+### App Usage ###
 
+- Routing
+    + `/<username>`, specify your user name, such as
+    `localhost:8080/user`, and a random color will be delivered to
+    characterize your name, temporarily stored in your browser session
+- Keyboard input
+    + `Ctrl`+`L`, clear the screen to wipe out all the messages
+    + `Ctrl`+`D` or `Ctrl`+`C`, clear the text you are currently
+    editing
+
+Well...Some Truth
+-----------------
+
+- The methods about keyboard input and blinker toggling are grabbed
+from [Clark DuVall](http://github.com/clarkduvall)'s amazing project
+[jsterm](http://github.com/clarkduvall/jsterm). Sincerely thanks to
+his fascinating ideas and great closure design.
 - **clics** runs using bottle built-in web server `WSGIRefServer()`,
 and mostly it's recommanded to run the server using `uWSGI` and
 `Nginx`, so you can set up a better environment and configure wisely
