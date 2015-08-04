@@ -1,3 +1,0 @@
-bottle == 0.12.8.egg
-Jinja2 == 2.7.3.egg
-setuptools == 3.3.egg

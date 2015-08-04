@@ -12,7 +12,7 @@ from jinja2 import *
 __version__ = '0.1.0'
 
 # Consts or configs
-STATIC_ROOT = './clics/layouts'
+STATIC_ROOT = './layouts'
 RECV_MSG = 1.0 # secs
 RESP_MSG = 0.1 # secs
 
